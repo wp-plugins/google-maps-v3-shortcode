@@ -2,8 +2,8 @@
 /*
 Plugin Name: Google Maps v3 Shortcode
 Plugin URI: http://gis.yohman.com
-Description: This plugin allows you to add one or more maps to your page/post using shortcodes.  Features include:  specify location by address or lat/lon combo, add kml, show address, add your own custom image icon, set map size.
-Version: 0.0
+Description: This plugin allows you to add one or more maps to your page/post using shortcodes.  Features include:  multiple maps on the same page, specify location by address or lat/lon combo, add kml, show traffic, add your own custom image icon, set map size.
+Version: 1.1
 Author: yohda
 Author URI: http://gis.yohman.com/
 */
@@ -23,7 +23,8 @@ function gmaps_header() {
 function mapme($attr) {
 
 	// default atts
-	$attr = shortcode_atts(array(	'lat'   => '0', 
+	$attr = shortcode_atts(array(	
+									'lat'   => '0', 
 									'lon'    => '0',
 									'id' => 'map',
 									'z' => '1',
@@ -34,11 +35,14 @@ function mapme($attr) {
 									'kml' => '',
 									'marker' => '',
 									'markerimage' => '',
-									'traffic' => 'no'), $attr);
+									'traffic' => 'no',
+									'infowindow' => ''
+									
+									), $attr);
 									
 
 	$returnme = '
-    <div id="' .$attr['id'] . '" style="width:' . $attr['w'] . 'px;height:' . $attr['h'] . 'px;border:1px solid red;"></div><br>
+    <div id="' .$attr['id'] . '" style="width:' . $attr['w'] . 'px;height:' . $attr['h'] . 'px;border:1px solid gray;"></div><br>
 
     <script type="text/javascript">
 
@@ -48,10 +52,10 @@ function mapme($attr) {
 			center: latlng,
 			mapTypeId: google.maps.MapTypeId.' . $attr['maptype'] . '
 		};
-		' . $attr['id'] . ' = new google.maps.Map(document.getElementById("' . $attr['id'] . '"),
+		var ' . $attr['id'] . ' = new google.maps.Map(document.getElementById("' . $attr['id'] . '"),
 		myOptions);
 		';
-		
+				
 		//kml
 		if($attr['kml'] != '') 
 		{
@@ -100,6 +104,26 @@ function mapme($attr) {
 							position: ' . $attr['id'] . '.getCenter()
 						});
 						';
+
+						//infowindow
+						if($attr['infowindow'] != '') 
+						{
+							//first convert and decode html chars
+							$thiscontent = htmlspecialchars_decode($attr['infowindow']);
+							$returnme .= '
+							var contentString = \'' . $thiscontent . '\';
+							var infowindow = new google.maps.InfoWindow({
+								content: contentString
+							});
+										
+							google.maps.event.addListener(marker, \'click\', function() {
+							  infowindow.open(' . $attr['id'] . ',marker);
+							});
+				
+							';
+						}
+
+
 					}
 			$returnme .= '
 				} else {
@@ -130,6 +154,24 @@ function mapme($attr) {
 				position: ' . $attr['id'] . '.getCenter()
 			});
 			';
+
+			//infowindow
+			if($attr['infowindow'] != '') 
+			{
+				$returnme .= '
+				var contentString = \'' . $attr['infowindow'] . '\';
+				var infowindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+							
+				google.maps.event.addListener(marker, \'click\', function() {
+				  infowindow.open(' . $attr['id'] . ',marker);
+				});
+	
+				';
+			}
+
+
 		}
 
 		$returnme .= '</script>';

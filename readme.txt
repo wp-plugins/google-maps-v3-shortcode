@@ -4,7 +4,7 @@ Donate link: http://gis.yohman.com/blog/2010/10/27/wordpress-plugin-google-maps-
 Tags: google, google maps, google maps api, kml, network links, shortcode, shortcodes, google maps v3, v3, geocode, map, mapping, maps, latitude, longitude, api, traffic
 Requires at least: 2.8
 Tested up to: 3.01
-Stable tag: trunk
+Stable tag: 1.1
 
 This plugin allows you to add one or more maps (via the Google Maps v3 API) to your page/post using shortcodes. 
 
@@ -25,6 +25,7 @@ Features:
 * add custom image as map icon
 * add KML via URL link
 * show traffic
+* info windows
 
 See a full description here:
 
@@ -43,9 +44,9 @@ e.g.
 == Frequently Asked Questions ==
 = How do I add a map to my post =
 
-Using shortcodes in the edit box for your post.
+Using shortcodes in the edit box for your post.  The address parameter for the address, and the "z" parameter for zoom level (ex: 0=world, 20=really zoomed in)
 
-Ex: [map address="New York, USA"]
+Ex: [map address="New York, USA" z="15"]
 
 See a full description of available shortcodes here:
 
@@ -65,6 +66,12 @@ Yes!  Just add your own width and height parameters (the default is 400x300).
 Ex:
 [map w="200" h="100"]
 
+= Can you add info bubbles? =
+Yes!  Add the "infowindow" parameter
+
+Ex:
+[map address="New York" marker="yes" infowindow="Hello New York!"]
+
 = Can you add KML's? =
 Yes!  Just provide the url link to the KML file.  The map will auto center and zoom to the extent of your KML.
 
@@ -80,8 +87,20 @@ http://gis.yohman.com/blog/2010/10/27/wordpress-plugin-google-maps-shortcode/
 
 == Changelog ==
 
+= 1.1 =
+* Added info window support
+* Got rid of red border around maps
+* Fixed bug that did not geocode maps in IE
+
 = 1.0 =
 * First release
 
-
 == Upgrade Notice ==
+
+= 1.1 =
+* Added info window support
+* Got rid of red border around maps
+* Fixed bug that did not geocode maps in IE
+
+= 1.0 =
+* First release

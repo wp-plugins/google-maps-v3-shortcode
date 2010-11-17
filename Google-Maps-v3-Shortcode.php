@@ -3,13 +3,10 @@
 Plugin Name: Google Maps v3 Shortcode
 Plugin URI: http://gis.yohman.com
 Description: This plugin allows you to add one or more maps to your page/post using shortcodes.  Features include:  multiple maps on the same page, specify location by address or lat/lon combo, add kml, show traffic, add your own custom image icon, set map size.
-Version: 1.1
+Version: 1.02
 Author: yohda
 Author URI: http://gis.yohman.com/
 */
-
-// [tag1] -> Some Longer Text
-
 
 // Add the google maps api to header
 add_action('wp_head', 'gmaps_header');
@@ -20,6 +17,7 @@ function gmaps_header() {
 	<?php
 }
 
+// Main function to generate google map
 function mapme($attr) {
 
 	// default atts
@@ -59,8 +57,10 @@ function mapme($attr) {
 		//kml
 		if($attr['kml'] != '') 
 		{
+			//Wordpress converts "&" into "&#038;", so converting those back
+			$thiskml = str_replace("&#038;","&",$attr['kml']);		
 			$returnme .= '
-			var kmllayer = new google.maps.KmlLayer(\'' . $attr['kml'] . '\');
+			var kmllayer = new google.maps.KmlLayer(\'' . $thiskml . '\');
 			kmllayer.setMap(' . $attr['id'] . ');
 			';
 		}

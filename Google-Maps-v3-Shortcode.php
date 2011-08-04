@@ -167,7 +167,9 @@ function mapme($attr) {
 				google.maps.event.addListener(marker, \'click\', function() {
 				  infowindow.open(' . $attr['id'] . ',marker);
 				});
-	
+				
+				infowindow.open(' . $attr['id'] . ',marker);
+				
 				';
 			}
 

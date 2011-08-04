@@ -2,11 +2,13 @@
 /*
 Plugin Name: Google Maps v3 Shortcode
 Plugin URI: http://gis.yohman.com
-Description: This plugin allows you to add one or more maps to your page/post using shortcodes.  Features include:  multiple maps on the same page, specify location by address or lat/lon combo, add kml, show traffic, add your own custom image icon, set map size.
-Version: 1.02
+Description: This plugin allows you to add one or more maps to your page/post using shortcodes.  Features include:  multiple maps on the same page, specify location by address or lat/lon combo, add kml, add fusion table layer, show traffic, show bike lanes, add your own custom image icon, set map size.
+Version: 1.2
 Author: yohda
 Author URI: http://gis.yohman.com/
+Last updated: 8/3/2011
 */
+
 
 // Add the google maps api to header
 add_action('wp_head', 'gmaps_header');
@@ -14,10 +16,12 @@ add_action('wp_head', 'gmaps_header');
 function gmaps_header() {
 	?>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<style type="text/css">
+        .entry-content img {max-width: 100000%; /* override */}
+    </style> 
 	<?php
 }
 
-// Main function to generate google map
 function mapme($attr) {
 
 	// default atts
@@ -31,16 +35,39 @@ function mapme($attr) {
 									'maptype' => 'ROADMAP',
 									'address' => '',
 									'kml' => '',
+									'kmlautofit' => 'yes',
 									'marker' => '',
 									'markerimage' => '',
 									'traffic' => 'no',
-									'infowindow' => ''
+									'bike' => 'no',
+									'fusion' => '',
+									'infowindow' => '',
+									'start' => '',
+									'end' => '',
+									'infowindow' => '',
+									'infowindowdefault' => 'yes',
+									'directions' => '',
+									'hidecontrols' => 'false'
 									
 									), $attr);
 									
 
 	$returnme = '
-    <div id="' .$attr['id'] . '" style="width:' . $attr['w'] . 'px;height:' . $attr['h'] . 'px;border:1px solid gray;"></div><br>
+    <div id="' .$attr['id'] . '" style="width:' . $attr['w'] . 'px;height:' . $attr['h'] . 'px;"></div>
+	';
+	
+	//directions panel
+	if($attr['start'] != '' && $attr['end'] != '') 
+	{
+		$panelwidth = $attr['w']-20;
+		$returnme .= '
+		<div id="directionsPanel" style="width:' . $panelwidth . 'px;height:' . $attr['h'] . 'px;border:1px solid gray;padding:10px;overflow:auto;"></div><br>
+		';
+	}
+
+
+	$returnme .= '
+    
 
     <script type="text/javascript">
 
@@ -48,6 +75,7 @@ function mapme($attr) {
 		var myOptions = {
 			zoom: ' . $attr['z'] . ',
 			center: latlng,
+			disableDefaultUI: ' . $attr['hidecontrols'] .',
 			mapTypeId: google.maps.MapTypeId.' . $attr['maptype'] . '
 		};
 		var ' . $attr['id'] . ' = new google.maps.Map(document.getElementById("' . $attr['id'] . '"),
@@ -57,11 +85,48 @@ function mapme($attr) {
 		//kml
 		if($attr['kml'] != '') 
 		{
-			//Wordpress converts "&" into "&#038;", so converting those back
-			$thiskml = str_replace("&#038;","&",$attr['kml']);		
+			if($attr['kmlautofit'] == 'no') 
+			{
+				$returnme .= '
+				var kmlLayerOptions = {preserveViewport:true};
+				';
+			}
+			else
+			{
+				$returnme .= '
+				var kmlLayerOptions = {preserveViewport:false};
+				';
+			}
 			$returnme .= '
-			var kmllayer = new google.maps.KmlLayer(\'' . $thiskml . '\');
+			var kmllayer = new google.maps.KmlLayer(\'' . htmlspecialchars_decode($attr['kml']) . '\',kmlLayerOptions);
 			kmllayer.setMap(' . $attr['id'] . ');
+			';
+		}
+
+		//directions
+		if($attr['start'] != '' && $attr['end'] != '') 
+		{
+			$returnme .= '
+			var directionDisplay;
+			var directionsService = new google.maps.DirectionsService();
+		    directionsDisplay = new google.maps.DirectionsRenderer();
+		    directionsDisplay.setMap(' . $attr['id'] . ');
+    		directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+
+				var start = \'' . $attr['start'] . '\';
+				var end = \'' . $attr['end'] . '\';
+				var request = {
+					origin:start, 
+					destination:end,
+					travelMode: google.maps.DirectionsTravelMode.DRIVING
+				};
+				directionsService.route(request, function(response, status) {
+					if (status == google.maps.DirectionsStatus.OK) {
+						directionsDisplay.setDirections(response);
+					}
+				});
+
+
 			';
 		}
 		
@@ -71,6 +136,24 @@ function mapme($attr) {
 			$returnme .= '
 			var trafficLayer = new google.maps.TrafficLayer();
 			trafficLayer.setMap(' . $attr['id'] . ');
+			';
+		}
+	
+		//bike
+		if($attr['bike'] == 'yes')
+		{
+			$returnme .= '			
+			var bikeLayer = new google.maps.BicyclingLayer();
+			bikeLayer.setMap(' . $attr['id'] . ');
+			';
+		}
+		
+		//fusion tables
+		if($attr['fusion'] != '')
+		{
+			$returnme .= '			
+			var fusionLayer = new google.maps.FusionTablesLayer(' . $attr['fusion'] . ');
+			fusionLayer.setMap(' . $attr['id'] . ');
 			';
 		}
 	
@@ -119,11 +202,16 @@ function mapme($attr) {
 							google.maps.event.addListener(marker, \'click\', function() {
 							  infowindow.open(' . $attr['id'] . ',marker);
 							});
-				
 							';
+
+							//infowindow default
+							if ($attr['infowindowdefault'] == 'yes')
+							{
+								$returnme .= '
+									infowindow.open(' . $attr['id'] . ',marker);
+								';
+							}
 						}
-
-
 					}
 			$returnme .= '
 				} else {
@@ -167,11 +255,15 @@ function mapme($attr) {
 				google.maps.event.addListener(marker, \'click\', function() {
 				  infowindow.open(' . $attr['id'] . ',marker);
 				});
-	
 				';
+				//infowindow default
+				if ($attr['infowindowdefault'] == 'yes')
+				{
+					$returnme .= '
+						infowindow.open(' . $attr['id'] . ',marker);
+					';
+				}				
 			}
-
-
 		}
 
 		$returnme .= '</script>';

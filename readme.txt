@@ -1,10 +1,11 @@
-=== Plugin Name ===
+=== Google Maps v3 Shortcode ===
 Contributors: yohman
-Donate link: http://gis.yohman.com/blog/2010/10/27/wordpress-plugin-google-maps-shortcode/
-Tags: google, google maps, google maps api, kml, network links, shortcode, shortcodes, google maps v3, v3, geocode, map, mapping, maps, latitude, longitude, api, traffic
+Donate link: http://gis.yohman.com/gmaps-plugin/
+Tags: google, google maps, google maps api, kml, network links, fusion, fusion tables, fusion layers, shortcode, shortcodes, google maps v3, v3, geocode, geocoding, address, infowindow, infowindows, map, mapping, maps, latitude, longitude, api, traffic, bike, marker, markers
 Requires at least: 2.8
-Tested up to: 3.01
-Stable tag: 1.02
+Tested up to: 3.21
+Stable tag: 1.2
+Last udated:  8/4/2011
 
 This plugin allows you to add one or more maps (via the Google Maps v3 API) to your page/post using shortcodes. 
 
@@ -15,21 +16,27 @@ This plugin allows you to add a google map into your post/page using shortcodes.
 
 Features:
 
-* multiple maps on the same post
+* default world map
+* show/hide map controls
 * set map size
 * set zoom level
 * set map type
+* multiple maps on the same post
 * set location by latitude/longitude
 * set location by address
 * add marker
+* Info windows
+* show/hide infowindow by default
 * add custom image as map icon
 * add KML via URL link
+* option to disable autozoom to KML bounds
+* add a Fusion Table Layer
 * show traffic
-* support for Google My Maps
+* show bike lanes
 
 See a full description here:
 
-http://gis.yohman.com/blog/2010/10/27/wordpress-plugin-google-maps-shortcode/
+http://gis.yohman.com/gmaps-plugin/
 
 == Installation ==
 
@@ -42,15 +49,18 @@ e.g.
 1. Add shortcodes in your posts (ex: [map address="New York, USA"])
 
 == Frequently Asked Questions ==
+= Is there documentation for this plugin? =
+
+Yes! See a full description of available shortcodes here:
+
+http://gis.yohman.com/gmaps-plugin/
+
 = How do I add a map to my post =
 
-Using shortcodes in the edit box for your post.
+Using shortcodes in the edit box for your post.  The address parameter for the address, and the "z" parameter for zoom level (ex: 0=world, 20=really zoomed in)
 
-Ex: [map address="New York, USA"]
+Ex: [map address="New York, USA" z="15"]
 
-See a full description of available shortcodes here:
-
-http://gis.yohman.com/blog/2010/10/27/wordpress-plugin-google-maps-shortcode/
 
 = Can I add multiple maps to the same post? =
 
@@ -66,14 +76,23 @@ Yes!  Just add your own width and height parameters (the default is 400x300).
 Ex:
 [map w="200" h="100"]
 
+= Can you add info bubbles? =
+Yes!  Add the "infowindow" parameter
+
+Ex:
+[map address="New York" marker="yes" infowindow="Hello New York!"]
+
 = Can you add KML's? =
 Yes!  Just provide the url link to the KML file.  The map will auto center and zoom to the extent of your KML.
 
 Ex:
 [map kml="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml"]
 
-= What about adding Google MyMaps? =
-Yes!  To do so, follow the instructions on this tutorial:
+= Can you add Fusion Table Layers? =
+Yes!  Just provide the Fusion Layer ID as "fusion" parameter.  
+
+Ex:
+[map address="90095" z=9 fusion="825831"]
 
 
 
@@ -81,28 +100,32 @@ Yes!  To do so, follow the instructions on this tutorial:
 
 See full working examples here:
 
-http://gis.yohman.com/blog/2010/10/27/wordpress-plugin-google-maps-shortcode/
+http://gis.yohman.com/gmaps-plugin/
 
 == Changelog ==
 
-= 1.02 =
-* Fixed bug to allow for KML's with special characters in the URL (this makes it possible to add Google MyMap KML's)
+= 1.2 =
+* added support for fusion table layers
+* added option to disable autozoom to KML bounds
+* added bike layer support
+* added ability to show info window by default
+* added ability to hide map controls
 
-= 1.01 =
+= 1.1 =
 * Added info window support
 * Got rid of red border around maps
+* Fixed bug that did not geocode maps in IE
 
 = 1.0 =
 * First release
 
 == Upgrade Notice ==
 
-= 1.02 =
-* Fixed bug to allow for KML's with special characters in the URL (this makes it possible to add Google MyMap KML's)
-
-= 1.01 =
-* Added info window support
-* Got rid of red border around maps
+= 1.2 =
+* show bike layer
+* show info window by default
+* add fusion table layer
+* option to disable autozoom to KML bounds
 
 = 1.0 =
 * First release

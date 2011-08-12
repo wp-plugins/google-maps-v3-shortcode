@@ -3,16 +3,16 @@
 Plugin Name: Google Maps v3 Shortcode
 Plugin URI: http://gis.yohman.com
 Description: This plugin allows you to add one or more maps to your page/post using shortcodes.  Features include:  multiple maps on the same page, specify location by address or lat/lon combo, add kml, add fusion table layer, show traffic, show bike lanes, add your own custom image icon, set map size.
-Version: 1.2
+Version: 1.2.1
 Author: yohda
 Author URI: http://gis.yohman.com/
-Last updated: 8/3/2011
+Last updated: 8/11/2011
 */
 
 
 // Add the google maps api to header
 add_action('wp_head', 'gmaps_header');
-
+ 
 function gmaps_header() {
 	?>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -41,13 +41,14 @@ function mapme($attr) {
 									'traffic' => 'no',
 									'bike' => 'no',
 									'fusion' => '',
-									'infowindow' => '',
 									'start' => '',
 									'end' => '',
 									'infowindow' => '',
 									'infowindowdefault' => 'yes',
 									'directions' => '',
-									'hidecontrols' => 'false'
+									'hidecontrols' => 'false',
+									'scale' => 'false',
+									'scrollwheel' => 'true'
 									
 									), $attr);
 									
@@ -75,6 +76,8 @@ function mapme($attr) {
 		var myOptions = {
 			zoom: ' . $attr['z'] . ',
 			center: latlng,
+			scrollwheel: ' . $attr['scrollwheel'] .',
+			scaleControl: ' . $attr['scale'] .',
 			disableDefaultUI: ' . $attr['hidecontrols'] .',
 			mapTypeId: google.maps.MapTypeId.' . $attr['maptype'] . '
 		};
@@ -98,7 +101,7 @@ function mapme($attr) {
 				';
 			}
 			$returnme .= '
-			var kmllayer = new google.maps.KmlLayer(\'' . htmlspecialchars_decode($attr['kml']) . '\',kmlLayerOptions);
+			var kmllayer = new google.maps.KmlLayer(\'' . html_entity_decode($attr['kml']) . '\',kmlLayerOptions);
 			kmllayer.setMap(' . $attr['id'] . ');
 			';
 		}

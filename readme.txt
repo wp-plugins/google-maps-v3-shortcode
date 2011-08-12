@@ -4,8 +4,8 @@ Donate link: http://gis.yohman.com/gmaps-plugin/
 Tags: google, google maps, google maps api, kml, network links, fusion, fusion tables, fusion layers, shortcode, shortcodes, google maps v3, v3, geocode, geocoding, address, infowindow, infowindows, map, mapping, maps, latitude, longitude, api, traffic, bike, marker, markers
 Requires at least: 2.8
 Tested up to: 3.21
-Stable tag: 1.2
-Last udated:  8/4/2011
+Stable tag: 1.2.1
+Last udated:  8/11/2011
 
 This plugin allows you to add one or more maps (via the Google Maps v3 API) to your page/post using shortcodes. 
 
@@ -33,6 +33,8 @@ Features:
 * add a Fusion Table Layer
 * show traffic
 * show bike lanes
+* disable scroll wheel zoom
+* add scale bar
 
 See a full description here:
 
@@ -95,7 +97,6 @@ Ex:
 [map address="90095" z=9 fusion="825831"]
 
 
-
 == Screenshots ==
 
 See full working examples here:
@@ -103,6 +104,11 @@ See full working examples here:
 http://gis.yohman.com/gmaps-plugin/
 
 == Changelog ==
+
+= 1.2.1 =
+* fixed bug that was not allowing Google My Map KML to display
+* added option to disable scroll wheel zoom
+* added option to display scale bar
 
 = 1.2 =
 * added support for fusion table layers
@@ -121,11 +127,10 @@ http://gis.yohman.com/gmaps-plugin/
 
 == Upgrade Notice ==
 
-= 1.2 =
-* show bike layer
-* show info window by default
-* add fusion table layer
-* option to disable autozoom to KML bounds
+= 1.2.1 =
+* fixed bug that was not allowing Google My Map KML to display
+* added option to disable scroll wheel zoom
+* added option to display scale bar
 
 = 1.0 =
 * First release
